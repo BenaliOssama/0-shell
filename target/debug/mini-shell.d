@@ -1,0 +1,1 @@
+/home/melfihry/0-shell/target/debug/mini-shell: /home/melfihry/0-shell/src/commands/cd.rs /home/melfihry/0-shell/src/commands/clear.rs /home/melfihry/0-shell/src/commands/echo.rs /home/melfihry/0-shell/src/commands/ls.rs /home/melfihry/0-shell/src/commands/mod.rs /home/melfihry/0-shell/src/main.rs
