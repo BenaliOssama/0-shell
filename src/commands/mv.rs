@@ -16,7 +16,8 @@ impl Command for Mv {
             } else {
                 "mv: missing file operand".to_owned()
             };
-            eprintln!("{}", err)
+            eprintln!("{}", err);
+            return;
         }
         let mut i = 0;
         while i < args.len() - 1 {
