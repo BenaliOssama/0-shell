@@ -5,7 +5,7 @@ use std::env;
 use colored::*;
 mod commands;
 use commands::{ Registry };
-use commands::{ echo::Echo, cd::Cd, ls::Ls, clear::Clear };
+use commands::{ echo::Echo, cd::Cd, ls::Ls, clear::Clear,exit::Exit };
 
 fn main() {
     print!("\x1B[2J\x1B[H");
@@ -24,6 +24,7 @@ fn main() {
     registry.register(Box::new(Cd));
     registry.register(Box::new(Ls));
     registry.register(Box::new(Clear));
+    registry.register(Box::new(Exit));
 
     loop {
         // Uncomment this block to pass the first stage

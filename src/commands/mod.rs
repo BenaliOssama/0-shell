@@ -4,6 +4,7 @@ pub mod echo;
 pub mod cd;
 pub mod ls;
 pub mod clear;
+pub mod exit;
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
