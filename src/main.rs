@@ -5,9 +5,15 @@ use std::fs::File;
 use std::io::{self, BufReader, Read, Write};
 mod commands;
 use commands::Registry;
+use ctrlc;
 
 fn main() {
     // print!("\x1B[2J\x1B[H");
+    ctrlc::set_handler(move || {
+        print!("\n{}{} ", build_prompt(), "$".color(Color::Yellow));
+        io::stdout().flush().unwrap();
+    })
+    .expect("Error setting CtrlC handler");
 
     match File::open("src/ascii-logo.txt") {
         Ok(mut f) => {
@@ -17,28 +23,37 @@ fn main() {
                 print!("{}", b as char)
             }
             println!("");
-        },
-        Err(_e) => {},
+        }
+        Err(_e) => {}
     }
 
     let registry = Registry::new();
-
-
     loop {
         // Uncomment this block to pass the first stage
         print!("{}{} ", build_prompt(), "$".color(Color::Yellow));
         io::stdout().flush().unwrap();
         // Wait for user input
         let mut input = String::new();
-        let _ = io::stdin().read_line(&mut input);
-        let parts: Vec<&str> = input.trim().split_whitespace().collect();
-        if parts.is_empty() {
-            continue;
+        let res = io::stdin().read_line(&mut input);
+        match res {
+            Ok(0) => {
+                println!("ctrl D detected, exiting...");
+                break;
+            }
+            Ok(_) => {
+                let parts: Vec<&str> = input.trim().split_whitespace().collect();
+                if parts.is_empty() {
+                    continue;
+                }
+
+                // this will romplaced with the parser  | by fihry
+                let (cmd, args) = parts.split_first().unwrap();
+                registry.run(cmd, args);
+            }
+            Err(e) => {
+                eprintln!("Error reading input: {}", e)
+            }
         }
-        
-        // this will romplaced with the parser  | by fihry
-        let (cmd, args) = parts.split_first().unwrap();
-        registry.run(cmd, args);
     }
 }
 
