@@ -9,6 +9,8 @@ pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
 
+
+
 pub trait Command {
     fn name(&self) -> &'static str;
     fn run(&self, args: &[&str]);
@@ -16,7 +18,14 @@ pub trait Command {
 
 impl Registry {
     pub fn new() -> Self {
-        Self { commands: HashMap::new() }
+        
+        let mut reg = Self { commands: HashMap::new() };
+        reg.register(Box::new(echo::Echo));
+        reg.register(Box::new(cd::Cd));
+        reg.register(Box::new(ls::Ls));
+        reg.register(Box::new(clear::Clear));
+        reg.register(Box::new(exit::Exit));
+        reg
     }
 
     pub fn register(&mut self, cmd: Box<dyn Command>) {

@@ -5,7 +5,6 @@ use std::fs::File;
 use std::io::{self, BufReader, Read, Write};
 mod commands;
 use commands::Registry;
-use commands::{cd::Cd, clear::Clear, echo::Echo, exit::Exit, ls::Ls};
 
 fn main() {
     // print!("\x1B[2J\x1B[H");
@@ -22,26 +21,21 @@ fn main() {
         Err(_e) => {},
     }
 
-    let mut registry = Registry::new();
-    // thos just example to start the project | by fihry
-    registry.register(Box::new(Echo));
-    registry.register(Box::new(Cd));
-    registry.register(Box::new(Ls));
-    registry.register(Box::new(Clear));
-    registry.register(Box::new(Exit));
+    let registry = Registry::new();
+
 
     loop {
         // Uncomment this block to pass the first stage
         print!("{}{} ", build_prompt(), "$".color(Color::Yellow));
         io::stdout().flush().unwrap();
         // Wait for user input
-        // io::stdin().read_line(&mut input).unwrap();
         let mut input = String::new();
         let _ = io::stdin().read_line(&mut input);
         let parts: Vec<&str> = input.trim().split_whitespace().collect();
         if parts.is_empty() {
             continue;
         }
+        
         // this will romplaced with the parser  | by fihry
         let (cmd, args) = parts.split_first().unwrap();
         registry.run(cmd, args);
