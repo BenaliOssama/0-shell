@@ -9,6 +9,7 @@ pub mod mkdir;
 pub mod mv;
 pub mod rm;
 pub mod cat;
+pub mod pwd;
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
@@ -33,6 +34,7 @@ impl Registry {
         reg.register(Box::new(mv::Mv));
         reg.register(Box::new(rm::Rm));
         reg.register(Box::new(cat::Cat));
+        reg.register(Box::new(pwd::Pwd));
         reg
     }
 
