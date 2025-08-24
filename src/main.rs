@@ -1,23 +1,27 @@
-#[allow(unused_imports)]
-use std::io::{ self, Write, BufReader,Read };
-use std::fs::File;
-use std::env;
 use colored::*;
+use std::env;
+use std::fs::File;
+#[allow(unused_imports)]
+use std::io::{self, BufReader, Read, Write};
 mod commands;
-use commands::{ Registry };
-use commands::{ echo::Echo, cd::Cd, ls::Ls, clear::Clear,exit::Exit };
+use commands::Registry;
+use commands::{cd::Cd, clear::Clear, echo::Echo, exit::Exit, ls::Ls};
 
 fn main() {
-    print!("\x1B[2J\x1B[H");
-    // let logo_ascii = fs::read("/home/melfihry/0-shell/src/ascii-logo.txt");
-    // println!("{:?}",logo_ascii);
-    let mut file = File::open("src/ascii-logo.txt").unwrap();
-    let mut buffer = Vec::new();
-    let _ =file.read_to_end(&mut buffer);
-    for b in buffer{
-        print!("{}",b as char)
+    // print!("\x1B[2J\x1B[H");
+
+    match File::open("src/ascii-logo.txt") {
+        Ok(mut f) => {
+            let mut buffer = Vec::new();
+            let _ = f.read_to_end(&mut buffer);
+            for b in buffer {
+                print!("{}", b as char)
+            }
+            println!("");
+        },
+        Err(_e) => {},
     }
-    println!("");
+
     let mut registry = Registry::new();
     // thos just example to start the project | by fihry
     registry.register(Box::new(Echo));
@@ -46,8 +50,7 @@ fn main() {
 
 pub fn build_prompt() -> String {
     let user = env::var("USER").unwrap_or("user".to_string());
-    let cwd = env
-        ::current_dir()
+    let cwd = env::current_dir()
         .ok()
         .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
         .unwrap_or("?".to_string());
