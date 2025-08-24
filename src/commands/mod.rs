@@ -5,6 +5,7 @@ pub mod cd;
 pub mod ls;
 pub mod clear;
 pub mod exit;
+pub mod mkdir;
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
@@ -25,6 +26,7 @@ impl Registry {
         reg.register(Box::new(ls::Ls));
         reg.register(Box::new(clear::Clear));
         reg.register(Box::new(exit::Exit));
+        reg.register(Box::new(mkdir::Mkdir));
         reg
     }
 
