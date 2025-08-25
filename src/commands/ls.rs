@@ -75,8 +75,11 @@ impl Command for Ls {
             println!("total {}", total_blocks / 2);
         }
         all_paths.sort_by(|a, b| {
-            a.file_name().unwrap().to_string_lossy().cmp(&b.file_name().unwrap().to_string_lossy())
+            let a_name = a.file_name().map(|f| f.to_string_lossy().to_string()).unwrap_or_else(|| a.display().to_string());
+            let b_name = b.file_name().map(|f| f.to_string_lossy().to_string()).unwrap_or_else(|| b.display().to_string());
+            a_name.cmp(&b_name)
         });
+
         display_entry(all_paths, long, classify);
     }
 }
