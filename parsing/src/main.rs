@@ -81,11 +81,8 @@ impl Token {
                 pipe_commands.push(command.clone());
                 seq.push(token.clone());
             };
-            pipe = false;
         }
-        if command.cmd != ""
-            && let Token::Pipe(pipe_commands) = &mut token
-        {
+        if command.cmd != "" && let Token::Pipe(pipe_commands) = &mut token {
             pipe_commands.push(command.clone());
             seq.push(token);
         } else if command.cmd != "" {
@@ -120,8 +117,9 @@ impl Data {
                     }
                 }
                 '|' | '&' | '>' | '<' | ';' => {
-                    if matches!(status, Status::Quotes(_))
-                        || matches!(status, Status::Operation(c) if c == chars[index])
+                    if
+                        matches!(status, Status::Quotes(_)) ||
+                        matches!(status, Status::Operation(c) if c == chars[index])
                     {
                         word.push(chars[index]);
                     } else if status != Status::Null {
@@ -155,8 +153,7 @@ impl Data {
         if word.len() != 0 {
             tkns.tokens.push(word.clone());
         }
-        tkns.tokens = tkns
-            .tokens
+        tkns.tokens = tkns.tokens
             .clone()
             .into_iter()
             .filter(|s| s != "")
@@ -170,6 +167,7 @@ fn main() {
     for cmd in commands {
         let tkn = Data::new(cmd);
         println!("{:?}", tkn.tokens);
-        println!("{:?}", Token::new(tkn));
+        let tokens = Token::new(tkn);
+        println!("{:?}", tokens);
     }
 }
