@@ -21,6 +21,9 @@ dependencies = [
 [[package]]
 name = "executer"
 version = "0.1.0"
+dependencies = [
+ "commands",
+]
 
 [[package]]
 name = "parsing"

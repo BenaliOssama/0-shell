@@ -1,3 +1,4 @@
+use commands::*;
 // take a command,
 // excute the command
 use std::io::Write;
