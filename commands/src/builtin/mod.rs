@@ -12,7 +12,6 @@ use crate::builtin::{ echo::Echo, cd::Cd,clear::Clear,exit::Exit };
 pub struct Cmd {
     pub name: String,
     pub args: Vec<String>,
-    pub bg: bool,
     pub stdin: Option<String>,
     pub stdout: Option<String>,
     pub stderr: Option<String>,

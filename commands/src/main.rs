@@ -35,7 +35,6 @@ fn main() {
         let cmd_data:Cmd = Cmd{
             name: cmd.to_string(),
             args: args.iter().map(|s| s.to_string()).collect(),
-            bg: false,
             stdin: None,
             stdout: Some("output.txt".to_string()),
             stderr: None,
