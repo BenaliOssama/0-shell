@@ -36,15 +36,15 @@ impl Token {
         for tkn in data.tokens {
             match tkn.as_str() {
                 "&&" | ";" => {
-                    if pipe && let Token::Pipe(pipe_commands) = &mut token {
-                        pipe_commands.push(command.clone());
-                        seq.push(token.clone());
-                        pipe = false;
+                    if pipe &&  let Token::Pipe(pipe_commands) = &mut token {
+                            pipe_commands.push(command.clone());
+                            seq.push(token.clone());
+			    println!("{:?}", command);
                     } else {
                         seq.push(Token::Cmd(command.clone()));
                     }
                     res.push(seq.clone());
-                    token = Token::Null;
+		    token = Token::Null;
                     seq = Vec::new();
                     command = Command {
                         cmd: String::new(),
@@ -53,14 +53,12 @@ impl Token {
                 }
                 "|" => {
                     pipe = true;
+		    println!("{:?}", command);
                     if !matches!(token, Token::Pipe(_)) {
-                        let mut pipes = Vec::new();
+                        println!("gitted");
+			let mut pipes = Vec::new();
                         pipes.push(command.clone());
                         token = Token::Pipe(pipes);
-                    } else {
-                        if let Token::Pipe(pipe_commands) = &mut token {
-                            pipe_commands.push(command.clone());
-                        }
                     }
                     command = Command {
                         cmd: String::new(),
@@ -80,17 +78,17 @@ impl Token {
             if let Token::Pipe(pipe_commands) = &mut token {
                 pipe_commands.push(command.clone());
                 seq.push(token.clone());
+            } else {
+                todo!();
             };
             pipe = false;
         }
-        if command.cmd != ""
-            && let Token::Pipe(pipe_commands) = &mut token
-        {
-            pipe_commands.push(command.clone());
-            seq.push(token);
+        if command.cmd != "" && let Token::Pipe(pipe_commands) = &mut token {
+        	pipe_commands.push(command.clone());
+		seq.push(token);
         } else if command.cmd != "" {
-            seq.push(Token::Cmd(command.clone()));
-        }
+		seq.push(Token::Cmd(command.clone()));
+	}
         if seq.len() != 0 {
             res.push(seq);
         }
@@ -166,7 +164,7 @@ impl Data {
 }
 
 fn main() {
-    let commands: Vec<&'static str> = vec!["l1 jfdlj | l2 arg2 && l3 | l4 arg arg arg | cmd | l5;"];
+    let commands: Vec<&'static str> = vec!["l1 jfdlj | l2 arg2 && l3 | l4 | l5;"];
     for cmd in commands {
         let tkn = Data::new(cmd);
         println!("{:?}", tkn.tokens);
