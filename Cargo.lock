@@ -7,13 +7,13 @@ name = "commands"
 version = "0.1.0"
 
 [[package]]
+name = "parsing"
+version = "0.1.0"
+
+[[package]]
 name = "shell"
 version = "0.1.0"
 dependencies = [
  "commands",
- "tokenizer",
+ "parsing",
 ]
-
-[[package]]
-name = "tokenizer"
-version = "0.1.0"
