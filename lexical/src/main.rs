@@ -11,47 +11,46 @@ struct Data {
 }
 
 struct Command {
-	cmd: String,
-	args: Vec<String>,
-	bg: bool,
+    cmd: String,
+    args: Vec<String>,
+    bg: bool,
 }
 
 enum Token {
-	Pipe((Command, Command)),
-	Redirect((Command, String, bool)),
-	Cmd(Command),
-	Asign(String),
+    Pipe((Output<Command>, Output<Command>)),
+    Cmd(Command),
 }
 
 impl Token {
-	fn new(data: Data) -> Vec<Vec<Token>> {
-		let mut res: Vec<Vec<Token>> = Vec::new();
-		let mut seq: Vec<Token> = Vec::new();
-		let mut command: Command = Command{
-			cmd: String::new(),
-			args: Vec::new(),
-			bg: bool,
-		};
-		let mut token: Token;
-		for tkn in data.tokens {
-			match tkn {
-				"&&" | ";" => {
-					seq.push(Token::Cmd(command));
-					res.push(seq);	
-				}
-				"|" => {
-					Token::Pipe()
-				}
-				_ => {
-					if command.cmd.is_empty() {
-						command.args.push(tkn);
-					} else {
-						command.cmd = tkn;
-					}
-				}
-			}
-		}
-	}
+    fn new(data: Data) -> Vec<Vec<Token>> {
+        let mut res: Vec<Vec<Token>> = Vec::new();
+        let mut seq: Vec<Token> = Vec::new();
+        let mut command: Command = Command {
+            cmd: String::new(),
+            args: Vec::new(),
+            bg: bool,
+        };
+        let mut token: Token;
+        for tkn in data.tokens {
+            match tkn {
+                "&&" | ";" => {
+                    seq.push(Token::Cmd(command));
+                    res.push(seq);
+                }
+                "|" => {
+                    token = Token::Pipe((Some(command), None));
+                    
+                }
+                _ => {
+                    if command.cmd.is_empty() {
+                        command.args.push(tkn);
+                    } else {
+                        command.cmd = tkn;
+                    }
+                }
+            }
+        }
+    }
 }
 
 impl Data {
@@ -73,12 +72,15 @@ impl Data {
                         word = String::new();
                     } else if matches!(status, Status::Quotes(_)) {
                         word.push(chars[index]);
-		    } else {
-			status = Status::Quotes(chars[index]);
+                    } else {
+                        status = Status::Quotes(chars[index]);
                     }
                 }
                 '|' | '&' | '>' | '<' | ';' => {
-                    if matches!(status, Status::Quotes(_)) || matches!(status, Status::Operation(c) if c == chars[index]) {
+                    if
+                        matches!(status, Status::Quotes(_)) ||
+                        matches!(status, Status::Operation(c) if c == chars[index])
+                    {
                         word.push(chars[index]);
                     } else if status != Status::Null {
                         tkns.tokens.push(word.clone());
@@ -86,32 +88,36 @@ impl Data {
                     }
                     if status == Status::Word || status == Status::Null {
                         status = Status::Operation(chars[index]);
-			word.push(chars[index]);
+                        word.push(chars[index]);
                     }
                 }
                 ' ' if word.len() != 0 && !matches!(status, Status::Quotes(_)) => {
                     tkns.tokens.push(word.clone());
                     word = String::new();
                 }
-		_ => {
-		    if chars[index] != ' ' || matches!(status, Status::Quotes(_)){
-			if matches!(status, Status::Operation(_)) && word != "" {
-				tkns.tokens.push(word.clone());
-				word = String::new();
-			}
-			if !matches!(status, Status::Quotes(_)) {
-                                status = Status::Word;
+                _ => {
+                    if chars[index] != ' ' || matches!(status, Status::Quotes(_)) {
+                        if matches!(status, Status::Operation(_)) && word != "" {
+                            tkns.tokens.push(word.clone());
+                            word = String::new();
+                        }
+                        if !matches!(status, Status::Quotes(_)) {
+                            status = Status::Word;
                         }
                         word.push(chars[index]);
                     }
-		}
+                }
             }
             index += 1;
         }
         if word.len() != 0 {
             tkns.tokens.push(word.clone());
         }
-	tkns.tokens = tkns.tokens.clone().into_iter().filter(|s| s != "").collect();
+        tkns.tokens = tkns.tokens
+            .clone()
+            .into_iter()
+            .filter(|s| s != "")
+            .collect();
         println!("{:?}", tkns.tokens);
         tkns
     }
@@ -129,10 +135,10 @@ fn main() {
         "echo $VAR",
         "command $(subcommand)",
         "find . -name \"*.py\" -exec grep \"def \" {} \\;",
-	"la|ls",
-	"ls -l | grep file; la"
+        "la|ls",
+        "ls -l | grep file; la"
     ];
     for cmd in commands {
-	let _tkn = Data::new(cmd);
+        let _tkn = Data::new(cmd);
     }
 }
