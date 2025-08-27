@@ -1,15 +1,36 @@
 // take a command,
 // excute the command
 use std::io::Write;
+use std::fmt::Debug;
+use std::fmt::Formatter;
 
-struct Command {
-    cmd: String,
+pub struct Command {
+    name: String,
     args: Vec<String>,
-    stdin: Option<Box<dyn Write>>,
-    stdout: Option<Box<dyn Write>>,
-    stderr: Option<Box<dyn Write>>,
+    stdin: Box<dyn Write>,
+    stdout: Box<dyn Write>,
+    stderr: Box<dyn Write>,
 }
 
+impl Command {
+    // command
+    pub fn new(
+        name: String,
+        args: Vec<String>,
+        stdin: Box<dyn Write>,
+        stdout: Box<dyn Write>,
+        stderr: Box<dyn Write>
+    ) -> Self {
+        Self { name, args, stdin, stdout, stderr }
+    }
+}
+
+impl Debug for Command {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+        writeln!(f, "todo!()")?;
+        Ok(())
+    }
+}
 
 pub fn excute(cmd: Command) {
     // check if command exist in register
