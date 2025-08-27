@@ -1,20 +1,38 @@
 use std::collections::HashMap;
 use colored::*;
+use std::io::Write;
+
 pub mod echo;
 pub mod cd;
 // pub mod ls;
 pub mod clear;
 pub mod exit;
+
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
-use crate::builtin::{ echo::Echo, cd::Cd,clear::Clear,exit::Exit };
+
+use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit };
+
 pub struct Cmd {
-    pub name: String,
-    pub args: Vec<String>,
-    pub stdin: Option<String>,
-    pub stdout: Option<String>,
-    pub stderr: Option<String>,
+    cmd: String,
+    args: Vec<String>,
+    stdin: Box<dyn Write>,
+    stdout: Box<dyn Write>,
+    stderr: Box<dyn Write>,
+}
+
+impl Cmd {
+    // command
+    fn new(
+        name: String,
+        args: Vec<String>,
+        stdin: dyn Write,
+        stdout: dyn Write,
+        stderr: dyn Write
+    ) -> Self {
+        Self { name, args, stdin, stdout, stderr }
+    }
 }
 
 pub trait Command {
@@ -23,8 +41,8 @@ pub trait Command {
 }
 
 impl Registry {
-    pub fn new() ->  Self {
-        let mut  register = Registry {
+    pub fn new() -> Self {
+        let mut register = Registry {
             commands: HashMap::new(),
         };
         register.register(Box::new(Echo));
