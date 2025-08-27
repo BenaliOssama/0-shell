@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 parsing = { path = "../parsing" }
 commands  = { path = "../commands" }
+ctrlc = "3.4.7"
