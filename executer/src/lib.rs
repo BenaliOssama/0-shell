@@ -27,7 +27,8 @@ impl Command {
 
 impl Debug for Command {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
-        writeln!(f, "todo!()")?;
+        writeln!(f, "name: {}", self.name)?;
+        write!(f, "args: {:?}", self.args)?;
         Ok(())
     }
 }
