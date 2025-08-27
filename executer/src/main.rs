@@ -1,5 +1,6 @@
 use std::io::{self, Write};
 use executer::{Command};
+use command::{Cmd};
 
 fn main() {
     let cmd = Command::new(
