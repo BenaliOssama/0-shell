@@ -8,6 +8,7 @@ pub mod exit;
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
+use crate::builtin::{ echo::Echo, cd::Cd,clear::Clear,exit::Exit };
 pub struct Cmd {
     pub name: String,
     pub args: Vec<String>,
@@ -23,8 +24,15 @@ pub trait Command {
 }
 
 impl Registry {
-    pub fn new() -> Self {
-        Self { commands: HashMap::new() }
+    pub fn new() ->  Self {
+        let mut  register = Registry {
+            commands: HashMap::new(),
+        };
+        register.register(Box::new(Echo));
+        register.register(Box::new(Cd));
+        register.register(Box::new(Clear));
+        register.register(Box::new(Exit));
+        register
     }
 
     pub fn register(&mut self, cmd: Box<dyn Command>) {

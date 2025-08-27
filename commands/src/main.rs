@@ -5,7 +5,6 @@ use std::env;
 use colored::*;
 mod builtin;
 use builtin::{ Registry,Cmd };
-use builtin::{ echo::Echo, cd::Cd,clear::Clear,exit::Exit };
 
 fn main() {
     print!("\x1B[2J\x1B[H");
@@ -19,12 +18,6 @@ fn main() {
     // }
     println!("");
     let mut registry = Registry::new();
-    // thos just example to start the project | by fihry
-    registry.register(Box::new(Echo));
-    registry.register(Box::new(Cd));
-    registry.register(Box::new(Clear));
-    registry.register(Box::new(Exit));
-
     loop {
         // Uncomment this block to pass the first stage
         print!("{}{} ", build_prompt(), "$".color(Color::Yellow));
