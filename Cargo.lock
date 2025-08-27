@@ -7,6 +7,10 @@ name = "commands"
 version = "0.1.0"
 
 [[package]]
+name = "executer"
+version = "0.1.0"
+
+[[package]]
 name = "parsing"
 version = "0.1.0"
 
