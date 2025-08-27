@@ -1,7 +1,3 @@
 [workspace]
 resolver = "3"
-members = [
-    "shell",
-    "parsing",
-    "commands"
-]
+members = ["shell", "commands", "analyzer"]
