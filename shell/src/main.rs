@@ -1,6 +1,7 @@
 use std::io::{self, Write};
 use ctrlc;
-
+// use std::io::stdin;
+// use termion::{event::Key, input::TermRead};
 fn main() {
     ctrlc::set_handler(move || {
         println!("");
@@ -42,3 +43,19 @@ fn quotes_even(input: &str) -> bool {
 
     double_quotes % 2 == 0 && single_quotes % 2 == 0
 }
+
+
+// fn main() {
+//     let stdin = stdin();
+//     for c in stdin.keys() {
+//         match c.unwrap() {
+//             Key::Up => {
+
+//             }
+//             Key::Down => {
+
+//             }
+//             _ => {}
+//         }
+//     }
+// }
