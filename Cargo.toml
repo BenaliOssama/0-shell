@@ -4,3 +4,4 @@ members = [
     "parsing",
     "commands"
 , "executer"]
+resolver = "3"
