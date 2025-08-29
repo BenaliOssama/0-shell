@@ -13,7 +13,7 @@ let cmd_data = Cmd {
     stdout: Box::new(io::stdout()), // type: Box<dyn Write>
     stderr: Box::new(io::stderr()), // type: Box<dyn Write>
 };
-registry.run(cmd /*example echo*/, cmd_data);```
+registry.run(cmd_data);```
 
 # Built-in Commands
 This module contains the implementation of built-in commands for the shell. Each command is defined in its own submodule, and the `Registry` struct is used to manage and execute these commands.
