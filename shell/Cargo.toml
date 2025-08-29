@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+evaluating = {path="../evaluating"}
 ctrlc = "3.4.7"
 termion = "4.0.5"

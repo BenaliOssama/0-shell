@@ -47,11 +47,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "evaluating"
+version = "0.1.0"
+dependencies = [
+ "executer",
+ "parsing",
+]
+
+[[package]]
 name = "executer"
 version = "0.1.0"
 dependencies = [
  "commands",
 ]
+
+[[package]]
+name = "lexing"
+version = "0.1.0"
 
 [[package]]
 name = "libc"
@@ -91,6 +103,9 @@ checksum = "6aa2c4e539b869820a2b82e1aef6ff40aa85e65decdd5185e83fb4b1249cd00f"
 [[package]]
 name = "parsing"
 version = "0.1.0"
+dependencies = [
+ "lexing",
+]
 
 [[package]]
 name = "redox_syscall"
@@ -112,6 +127,7 @@ name = "shell"
 version = "0.1.0"
 dependencies = [
  "ctrlc",
+ "evaluating",
  "termion",
 ]
 

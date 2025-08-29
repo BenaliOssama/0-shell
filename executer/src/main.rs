@@ -11,6 +11,6 @@ fn main() {
         Box::new(io::stderr()),       // stderr
     );
 
-    let err = execute(cmd, "/user/bin");
+    let err = exec(cmd, "/usr/bin");
     println!("{:?}", err);
 }

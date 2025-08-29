@@ -5,7 +5,7 @@ use std::process::Command;
 use commands::Registry;
 pub use commands::Cmd;
 
-pub fn execute(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
+pub fn exec(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
     let registry = Registry::new();
 
     // 1. Built-in

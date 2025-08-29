@@ -1,7 +1,9 @@
 [workspace]
+resolver = "3"
 members = [
     "shell",
-    "parsing",
+    "evaluating",
     "commands",
-    "executer"
-]
+    "executer",
+    "lexing",
+    "parsing"]

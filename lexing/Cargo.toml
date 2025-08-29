@@ -1,7 +1,6 @@
 [package]
-name = "parsing"
+name = "lexing"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-lexing = {path="../lexing"}
