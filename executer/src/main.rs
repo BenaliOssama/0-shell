@@ -1,12 +1,12 @@
 use std::io::{self, Write};
-use executer::{Command};
-use command::{Cmd};
+use executer::*;
+use commands::{Cmd};
 
 fn main() {
-    let cmd = Command::new(
+    let cmd = Cmd::new(
         "pwd".to_string(),
         vec![],                       // empty args
-        Box::new(io::sink()),         // stdin
+        Box::new(io::stdin()),         // stdin
         Box::new(io::stdout()),       // stdout
         Box::new(io::stderr()),       // stderr
     );

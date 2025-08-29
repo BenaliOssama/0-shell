@@ -7,11 +7,11 @@ like this:
 ```rust
 let registry = Registry::new();
 let cmd_data = Cmd {
-    name: "echo".to_string(),
-    args: vec!["Hello, World!".to_string()],
-    stdin: None,
-    stdout: None,
-    stderr: None,
+    name: "echo".to_string(), // type: String
+    args: vec!["Hello, World!".to_string()], // type: Vec<String>
+    stdin: Box::new(io::stdin()), // type: Box<dyn Read>
+    stdout: Box::new(io::stdout()), // type: Box<dyn Write>
+    stderr: Box::new(io::stderr()), // type: Box<dyn Write>
 };
 registry.run(cmd /*example echo*/, cmd_data);```
 

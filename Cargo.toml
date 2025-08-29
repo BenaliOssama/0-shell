@@ -2,6 +2,7 @@
 members = [
     "shell",
     "parsing",
-    "commands"
-, "executer"]
-resolver = "3"
+    "commands",
+    "executer",
+    "tools/ls"
+]
