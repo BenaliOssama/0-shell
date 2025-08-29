@@ -14,17 +14,17 @@ pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
 
-use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit,pwd::Pwd};
+use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit, pwd::Pwd };
 
 pub struct Cmd {
-    cmd: String,
-    args: Vec<String>,
-    stdin: Box<dyn Read>,
-    stdout: Box<dyn Write>,
-    stderr: Box<dyn Write>,
+    pub cmd: String,
+    pub args: Vec<String>,
+    pub stdin: Box<dyn Read>,
+    pub stdout: Box<dyn Write>,
+    pub stderr: Box<dyn Write>,
 }
 
-impl Debug for Cmd{
+impl Debug for Cmd {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         writeln!(f, "name: {}", self.cmd)?;
         write!(f, "args: {:?}", self.args)?;
@@ -65,7 +65,9 @@ impl Registry {
     pub fn register(&mut self, cmd: Box<dyn Command>) {
         self.commands.insert(cmd.name(), cmd);
     }
-
+    pub fn has(&self, cmd: &Cmd) -> bool {
+        self.commands.contains_key(cmd.cmd.as_str())
+    }
     pub fn run(&self, mut cmd_data: Cmd) {
         if let Some(cmd) = self.commands.get(cmd_data.cmd.as_str()) {
             cmd.run(&mut cmd_data);

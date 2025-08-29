@@ -3,7 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use commands::Registry;
-use commands::Cmd;
+pub use commands::Cmd;
 
 pub fn execute(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
     let registry = Registry::new();
