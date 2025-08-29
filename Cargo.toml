@@ -3,6 +3,5 @@ members = [
     "shell",
     "parsing",
     "commands",
-    "executer",
-    "tools/ls"
+    "executer"
 ]

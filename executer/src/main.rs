@@ -11,5 +11,6 @@ fn main() {
         Box::new(io::stderr()),       // stderr
     );
 
-    println!("{:?}", cmd);
+    excute(cmd);
+
 }

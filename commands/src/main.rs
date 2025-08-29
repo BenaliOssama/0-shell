@@ -39,7 +39,7 @@ fn main() {
             Box::new(io::stdout()),
             Box::new(io::stderr()),
         );
-        registry.run(cmd, cmd_data);
+        registry.run(cmd_data);
     }
 }
 
