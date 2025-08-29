@@ -1,19 +1,48 @@
-pub use commands::Cmd;
+use std::error::Error;
+use std::fs;
+use std::path::PathBuf;
+use std::process::Command;
 use commands::Registry;
-// take a command,
-// excute the command
-use std::io::Write;
-use std::fmt::Debug;
-use std::fmt::Formatter;
+use commands::Cmd;
 
-pub fn excute(cmd: Cmd) {
+pub fn execute(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
     let registry = Registry::new();
 
-    registry.run(cmd);
-    // check if command exist in register
-    // check if command exist in file of binary
-    // if not write error to the standard error
+    // 1. Built-in
+    if registry.has(&cmd) {
+        registry.run(cmd);
+        return Ok(());
+    }
 
-    // excute the command someway if it is builtin
-    // excute the command someway if it is internal binary
+    // 2. External in env_dir
+    let dir = PathBuf::from(env_dir);
+
+    if !dir.exists() {
+        return Err(format!("directory '{}' not found", dir.display()).into());
+    }
+
+    let entries = fs::read_dir(&dir)?;
+
+    let mut found_path = None;
+    for entry in entries {
+        let entry = entry?;
+        if let Some(filename) = entry.file_name().to_str() {
+            if filename == cmd.cmd {
+                found_path = Some(entry.path());
+                break;
+            }
+        }
+    }
+
+    if let Some(path) = found_path {
+        let status = Command::new(path).args(cmd.args).spawn()?.wait()?;
+
+        if status.success() {
+            Ok(())
+        } else {
+            Err(format!("command '{}' exited with {:?}", cmd.cmd, status).into())
+        }
+    } else {
+        Err(format!("command not found: {}", cmd.cmd).into())
+    }
 }

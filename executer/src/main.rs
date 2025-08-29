@@ -4,13 +4,13 @@ use commands::{Cmd};
 
 fn main() {
     let cmd = Cmd::new(
-        "pwd".to_string(),
+        "ls".to_string(),
         vec![],                       // empty args
         Box::new(io::stdin()),         // stdin
         Box::new(io::stdout()),       // stdout
         Box::new(io::stderr()),       // stderr
     );
 
-    excute(cmd);
-
+    let err = execute(cmd, "/user/bin");
+    println!("{:?}", err);
 }
