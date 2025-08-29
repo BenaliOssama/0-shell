@@ -1,6 +1,7 @@
 mod parsing;
 use parsing::lexing::Lexer;
 use parsing::AstNode;
+use parsing::Command;
 pub fn evaluate(user_input: &str) {
 	let mut cmd_line: String = user_input.to_string().trim().to_string();
 	if !cmd_line.ends_with(";") && !cmd_line.ends_with("&&") {
@@ -10,7 +11,7 @@ pub fn evaluate(user_input: &str) {
 	let ast_data = AstNode::new(lexer_tokens);
 	for sub_vector in ast_data {
 		for node in sub_vector {
-			if let AstNode::Pipeline(commands) = node; {
+			if let AstNode::Pipeline(commands) = node {
 				evaluate_pipeline(commands);
 			}
 		}
@@ -18,8 +19,7 @@ pub fn evaluate(user_input: &str) {
 }
 
 fn evaluate_pipeline(commands: Vec<Command>) {
-	let stdout = OpenOption::new().append(false).write(true).read(true).create(true).open("Temporary/stdout");
-	for cmd in commands {
-		
+	for command in commands {
+		println!("{:?}", command);
 	}
 }

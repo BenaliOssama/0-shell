@@ -1,4 +1,4 @@
-]mod tokenizer;
+mod tokenizer;
 use tokenizer::evaluate;
 
 fn main() {
