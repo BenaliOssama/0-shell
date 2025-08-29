@@ -1,10 +1,9 @@
-use std::{collections::HashMap, io::Read};
+use std::collections::HashMap;
 use colored::*;
-use std::io::Write;
+use std::io::{Write,Read};
 
 pub mod echo;
 pub mod cd;
-// pub mod ls;
 pub mod clear;
 pub mod exit;
 
@@ -12,7 +11,7 @@ pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
 
-use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit };
+use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit};
 
 pub struct Cmd {
     cmd: String,
