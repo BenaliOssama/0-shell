@@ -17,7 +17,7 @@ fn main() {
     //     print!("{}",b as char)
     // }
     println!("");
-    let mut registry = Registry::new();
+    let registry = Registry::new();
     loop {
         // Uncomment this block to pass the first stage
         print!("{}{} ", build_prompt(), "$".color(Color::Yellow));
@@ -32,13 +32,13 @@ fn main() {
         }
         // this will romplaced with the parser  | by fihry
         let (cmd, args) = parts.split_first().unwrap();
-        let cmd_data:Cmd = Cmd{
-            name: cmd.to_string(),
-            args: args.iter().map(|s| s.to_string()).collect(),
-            stdin: None,
-            stdout: Some("output.txt".to_string()),
-            stderr: None,
-        };
+        let cmd_data:Cmd = Cmd::new(
+            cmd.to_string(),
+            args.iter().map(|s| s.to_string()).collect(),
+            Box::new(io::stdin()),
+            Box::new(io::stdout()),
+            Box::new(io::stderr()),
+        );
         registry.run(cmd, cmd_data);
     }
 }

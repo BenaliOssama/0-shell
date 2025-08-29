@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, io::Read};
 use colored::*;
 use std::io::Write;
 
@@ -17,27 +17,26 @@ use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit };
 pub struct Cmd {
     cmd: String,
     args: Vec<String>,
-    stdin: Box<dyn Write>,
+    stdin: Box<dyn Read>,
     stdout: Box<dyn Write>,
     stderr: Box<dyn Write>,
 }
 
 impl Cmd {
-    // command
-    fn new(
-        name: String,
+    pub fn new(
+        cmd: String,
         args: Vec<String>,
-        stdin: dyn Write,
-        stdout: dyn Write,
-        stderr: dyn Write
+        stdin: Box<dyn Read>,
+        stdout: Box<dyn Write>,
+        stderr: Box<dyn Write>,
     ) -> Self {
-        Self { name, args, stdin, stdout, stderr }
+        Self { cmd, args, stdin, stdout, stderr }
     }
 }
 
 pub trait Command {
     fn name(&self) -> &'static str;
-    fn run(&self, cmd: &Cmd);
+    fn run(&self, cmd: &mut Cmd);
 }
 
 impl Registry {
@@ -56,9 +55,9 @@ impl Registry {
         self.commands.insert(cmd.name(), cmd);
     }
 
-    pub fn run(&self, name: &str, cmd_data: Cmd) {
+    pub fn run(&self, name: &str, mut cmd_data: Cmd) {
         if let Some(cmd) = self.commands.get(name) {
-            cmd.run(&cmd_data);
+            cmd.run(&mut cmd_data);
         } else {
             eprintln!(
                 "{} command not found: {}",
