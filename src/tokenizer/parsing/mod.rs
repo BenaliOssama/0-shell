@@ -1,3 +1,6 @@
+pub mod lexing;
+use lexing::Lexer;
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Command {
     program: String,

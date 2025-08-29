@@ -7,7 +7,7 @@ pub enum ParseState {
 }
 
 pub struct Lexer {
-    lexemes: Vec<String>,
+    pub lexemes: Vec<String>,
 }
 
 impl Lexer {
