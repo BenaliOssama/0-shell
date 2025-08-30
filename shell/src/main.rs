@@ -4,6 +4,8 @@ use std::env;
 // use std::io::stdin;
 // use termion::{event::Key, input::TermRead};
 fn main() {
+    let value = env::var(name)?;
+
     dotenvy::dotenv().ok();
 
     ctrlc::set_handler(move || {
