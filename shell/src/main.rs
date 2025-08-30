@@ -1,11 +1,15 @@
 use std::io::{self, Write};
 use ctrlc;
+use std::env;
 // use std::io::stdin;
 // use termion::{event::Key, input::TermRead};
 fn main() {
+    dotenvy::dotenv().ok();
+
     ctrlc::set_handler(move || {
         println!("");
     }).expect("Error setting Ctrl-C handler");
+
     loop {
         print!("$Welcome:: ");
         io::stdout().flush().unwrap();
