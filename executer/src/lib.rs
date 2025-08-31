@@ -1,11 +1,10 @@
 use std::error::Error;
-use std::fs;
-use std::path::PathBuf;
+use std::env;
 use std::process::Command;
 use commands::Registry;
 pub use commands::Cmd;
 
-pub fn exec(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
+pub fn exec(cmd: Cmd) -> Result<(), Box<dyn Error>> {
     let registry = Registry::new();
 
     // 1. Built-in
@@ -15,34 +14,12 @@ pub fn exec(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
     }
 
     // 2. External in env_dir
-    let dir = PathBuf::from(env_dir);
+    let path = env::var(&cmd.cmd)?;
 
-    if !dir.exists() {
-        return Err(format!("directory '{}' not found", dir.display()).into());
-    }
+    let status = Command::new(path).args(cmd.args).spawn()?.wait()?;
 
-    let entries = fs::read_dir(&dir)?;
-
-    let mut found_path = None;
-    for entry in entries {
-        let entry = entry?;
-        if let Some(filename) = entry.file_name().to_str() {
-            if filename == cmd.cmd {
-                found_path = Some(entry.path());
-                break;
-            }
-        }
-    }
-
-    if let Some(path) = found_path {
-        let status = Command::new(path).args(cmd.args).spawn()?.wait()?;
-
-        if status.success() {
-            Ok(())
-        } else {
-            Err(format!("command '{}' exited with {:?}", cmd.cmd, status).into())
-        }
-    } else {
-        Err(format!("command not found: {}", cmd.cmd).into())
-    }
+    if !status.success() {
+        return Err(format!("command '{}' exited with {:?}", cmd.cmd, status).into());
+    } 
+    Ok(()) 
 }

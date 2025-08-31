@@ -11,6 +11,7 @@ all: clean build copy env
 clean:
 	@echo "Cleaning $(TARGET_DIR)..."
 	@cargo clean
+	@rm -rf $(INSTALL_DIR)/* $(INSTALL_DIR)/*
 	@mkdir -p $(INSTALL_DIR)
 
 build:
@@ -34,11 +35,13 @@ env:
 	@echo "Updating $(ENV_FILE)..."
 	@rm -f $(ENV_FILE)
 	@touch $(ENV_FILE)
-# 	@for f in $(INSTALL_DIR)/*; do \
-# 		name=$$(basename $$f); \
-# 		echo "$$name=$$f" >> $(ENV_FILE); \
-# 	done
-	@echo "PATH=$$(pwd)/$(INSTALL_DIR)" >> $(ENV_FILE)
+	@for f in $(INSTALL_DIR)/*; do \
+		name=$$(basename $$f); \
+		echo "$$name=$$f" >> $(ENV_FILE); \
+	done
 	@echo "✅ .env updated:"
 	@cat $(ENV_FILE)
 
+run: 
+	@echo "Running shell..."
+	@$(TARGET_DIR)/shell

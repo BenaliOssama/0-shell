@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 evaluating = {path="../evaluating"}
 ctrlc = "3.4.7"
+colored = "3.0.0"

@@ -2,8 +2,6 @@ use parsing::Lexer;
 use parsing::{ AstNode, Command };
 use executer::{ exec, Cmd };
 use std::io;
-use std::env;
-use dotenvy::dotenv_override;
 
 pub fn evaluate(user_input: &str) {
     let mut cmd_line: String = user_input.to_string().trim().to_string();
@@ -18,9 +16,7 @@ pub fn evaluate(user_input: &str) {
                 evaluate_pipeline(commands);
             } else if let AstNode::Command(command) = node {
                 // from_filename(".env").expect("Failed to read .env file");
-                dotenv_override().ok();
-                let path = env::var("PATH").unwrap_or_default();
-                exec(to_cmd(command), &path);
+                exec(to_cmd(command));
             }
         }
     }
@@ -28,7 +24,7 @@ pub fn evaluate(user_input: &str) {
 
 fn evaluate_pipeline(commands: Vec<Command>) {
     for command in commands {
-        exec(to_cmd(command), "/usr/bin");
+        exec(to_cmd(command));
     }
 }
 
