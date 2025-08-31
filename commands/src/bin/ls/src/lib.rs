@@ -81,7 +81,7 @@ impl Command for Ls {
                     all_paths.push(p);
                 }
             } else {
-                cmd.stderr.write_all(format!("ls: cannot access '{}': No such file or directory\n", path_str).as_bytes()).unwrap();
+                let _ = writeln!(cmd.stderr, "ls: cannot access '{}': No such file or directory", path_str);
             }
         }
 
@@ -210,9 +210,8 @@ fn display_entry(cmd: &mut Cmd, paths: Vec<PathBuf>, long: bool, classify: bool)
                 } else {
                     (format!("{:>8}", metadata.len()), ())
                 };
-
-                cmd.stdout.write_all(format!(
-                    "{}{} {:<3} {:<8} {:<8} {} {} {}\n",
+                let _= writeln!( cmd.stdout, format!(
+                    "{}{} {:<3} {:<8} {:<8} {} {} {}",
                     file_type,
                     perms_string,
                     metadata.nlink(),
@@ -221,14 +220,14 @@ fn display_entry(cmd: &mut Cmd, paths: Vec<PathBuf>, long: bool, classify: bool)
                     size_or_dev,
                     last_modified.format("%b %e %H:%M"),
                     display_name
-                ).as_bytes()).unwrap();
+                ));
             } else {
-                cmd.stdout.write_all(format!("{}  \n", display_name).as_bytes()).unwrap();
+                let _ = writeln!(cmd.stdout, "{}", display_name);
             }
         }
     }
 
     if !long {
-        cmd.stdout.write_all(b"\n").unwrap();
+        let _ = writeln!(cmd.stdout, "");
     }
 }

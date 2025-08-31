@@ -14,7 +14,7 @@ pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
 
-use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit, pwd::Pwd };
+use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit, pwd::Pwd,};
 
 pub struct Cmd {
     pub cmd: String,
