@@ -7,7 +7,7 @@ pub struct Cmd {
     pub cmd: String,
     pub args: Vec<String>,
     _stdin: Box<dyn Read>,
-    stdout: Box<dyn Write>,
+    _stdout: Box<dyn Write>,
     stderr: Box<dyn Write>,
 }
 impl Cmd {
@@ -16,7 +16,7 @@ impl Cmd {
             cmd: String::new(),
             args: Vec::new(),
             _stdin: Box::new(std::io::stdin()),
-            stdout: Box::new(std::io::stdout()),
+            _stdout: Box::new(std::io::stdout()),
             stderr: Box::new(std::io::stderr()),
         }
     }
