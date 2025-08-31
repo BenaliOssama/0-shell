@@ -48,19 +48,3 @@ fn quotes_even(input: &str) -> bool {
 
     double_quotes % 2 == 0 && single_quotes % 2 == 0
 }
-
-
-// fn main() {
-//     let stdin = stdin();
-//     for c in stdin.keys() {
-//         match c.unwrap() {
-//             Key::Up => {
-
-//             }
-//             Key::Down => {
-
-//             }
-//             _ => {}
-//         }
-//     }
-// }

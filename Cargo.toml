@@ -6,4 +6,6 @@ members = [
     "commands",
     "executer",
     "lexing",
-    "parsing"]
+    "parsing",
+    "commands/src/bin/*",
+    ]

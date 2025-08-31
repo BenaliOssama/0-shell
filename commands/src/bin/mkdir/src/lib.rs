@@ -1,8 +1,6 @@
-use crate::Cmd;
-use super::Command;
 use std::fs;
 use std::path::Path;
-use std::io::Write;
+use std::io::{Write,Read};
 
 pub struct Mkdir;
 pub struct Cmd {
@@ -12,7 +10,22 @@ pub struct Cmd {
     stdout: Box<dyn Write>,
     stderr: Box<dyn Write>,
 }
+pub trait Command {
+    fn name(&self) -> &'static str;
+    fn run(&self, cmd: &mut Cmd);
+}
 
+impl Cmd {
+    pub fn new() -> Self {
+        Cmd {
+            cmd: String::new(),
+            args: Vec::new(),
+            stdin: Box::new(std::io::stdin()),
+            stdout: Box::new(std::io::stdout()),
+            stderr: Box::new(std::io::stderr()),
+        }
+    }
+}
 impl Command for Mkdir {
     fn name(&self) -> &'static str {
         "mkdir"
@@ -69,9 +82,7 @@ Options:
                     }
                 }
                 Err(e) => {
-                    let _ = writeln!(cmd.stderr,
-                        "mkdir: cannot create directory '{}': {}",
-                        dir, e);
+                    let _ = writeln!(cmd.stderr,"mkdir: cannot create directory '{}': {}",dir, e);
                 }
             }
         }
