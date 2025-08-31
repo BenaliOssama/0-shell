@@ -6,7 +6,7 @@ pub struct Mkdir;
 pub struct Cmd {
     pub cmd: String,
     pub args: Vec<String>,
-    stdin: Box<dyn Read>,
+    _stdin: Box<dyn Read>,
     stdout: Box<dyn Write>,
     stderr: Box<dyn Write>,
 }
@@ -20,7 +20,7 @@ impl Cmd {
         Cmd {
             cmd: String::new(),
             args: Vec::new(),
-            stdin: Box::new(std::io::stdin()),
+            _stdin: Box::new(std::io::stdin()),
             stdout: Box::new(std::io::stdout()),
             stderr: Box::new(std::io::stderr()),
         }
