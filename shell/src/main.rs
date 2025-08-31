@@ -1,5 +1,10 @@
 use std::io::{self, Write};
 use ctrlc;
+use evaluating::evaluate;
+// use std::io::stdin;
+// use termion::{event::Key, input::TermRead};
+
+
 fn main() {
 
     ctrlc::set_handler(move || {
@@ -7,12 +12,12 @@ fn main() {
     }).expect("Error setting Ctrl-C handler");
 
     loop {
-        print!("$Welcome:: ");
+        print!("$ ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
         match read_input(&mut input) {
             Ok(0) =>  std::process::exit(0),
-            Ok(_) => print!("{}", input),
+            Ok(_) => evaluate(&input),
             Err(e) => eprint!("{}", e), 
         }
     }
@@ -43,3 +48,19 @@ fn quotes_even(input: &str) -> bool {
 
     double_quotes % 2 == 0 && single_quotes % 2 == 0
 }
+
+
+// fn main() {
+//     let stdin = stdin();
+//     for c in stdin.keys() {
+//         match c.unwrap() {
+//             Key::Up => {
+
+//             }
+//             Key::Down => {
+
+//             }
+//             _ => {}
+//         }
+//     }
+// }

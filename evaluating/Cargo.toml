@@ -1,0 +1,9 @@
+[package]
+name = "evaluating"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+executer = {path = "../executer"}
+parsing = {path = "../parsing"}
+

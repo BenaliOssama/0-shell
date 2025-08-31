@@ -47,11 +47,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "evaluating"
+version = "0.1.0"
+dependencies = [
+ "executer",
+ "parsing",
+]
+
+[[package]]
 name = "executer"
 version = "0.1.0"
 dependencies = [
  "commands",
 ]
+
+[[package]]
+name = "lexing"
+version = "0.1.0"
 
 [[package]]
 name = "libc"
@@ -74,12 +86,16 @@ dependencies = [
 [[package]]
 name = "parsing"
 version = "0.1.0"
+dependencies = [
+ "lexing",
+]
 
 [[package]]
 name = "shell"
 version = "0.1.0"
 dependencies = [
  "ctrlc",
+ "evaluating",
 ]
 
 [[package]]
