@@ -54,6 +54,13 @@ pub fn execute(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
     }
 
     if let Some(path) = found_path {
+        /*_______________________can be tested___________________________*/
+        // use Builder pattern to create a new command
+        // let output = Command::new("ls") // create a new command
+        //     .arg("-la") // add argument(s)
+        //     .output() // execute the command and capture output
+        //     .expect("Failed to execute command"); // handle any errors
+        /*_______________________________________________________________*/
         let status = Command::new(path).args(cmd.args).spawn()?.wait()?;
 
         if status.success() {
