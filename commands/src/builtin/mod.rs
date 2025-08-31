@@ -9,13 +9,12 @@ pub mod cd;
 pub mod clear;
 pub mod exit;
 pub mod pwd;
-pub mod mkdir;
 
 pub struct Registry {
     commands: HashMap<&'static str, Box<dyn Command>>,
 }
 
-use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit, pwd::Pwd,mkdir::Mkdir};
+use crate::builtin::{ echo::Echo, cd::Cd, clear::Clear, exit::Exit, pwd::Pwd,};
 
 pub struct Cmd {
     pub cmd: String,
@@ -60,7 +59,6 @@ impl Registry {
         register.register(Box::new(Clear));
         register.register(Box::new(Exit));
         register.register(Box::new(Pwd));
-        register.register(Box::new(Mkdir));
         register
     }
 
