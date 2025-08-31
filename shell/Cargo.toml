@@ -4,5 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-dotenvy = "0.16" 
+evaluating = {path="../evaluating"}
 ctrlc = "3.4.7"
+colored = "3.0.0"

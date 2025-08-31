@@ -1,4 +1,7 @@
 # Rust build artifacts
 /target/
 **/target/
+**/Cargo.lock
+/bin/
+.env
 
