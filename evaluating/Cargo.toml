@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 executer = {path = "../executer"}
 parsing = {path = "../parsing"}
+dotenvy = "0.15.6"
 

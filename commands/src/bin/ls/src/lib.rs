@@ -4,12 +4,12 @@ use std::os::unix::fs::{ PermissionsExt, MetadataExt, FileTypeExt };
 use std::path::{ Path, PathBuf };
 use users::{ get_user_by_uid, get_group_by_gid };
 use chrono::{ DateTime, Local };
-use std::io::{Write,Read};
+use std::io::{ Write, Read };
 pub struct Ls;
 pub struct Cmd {
     pub cmd: String,
     pub args: Vec<String>,
-    stdin: Box<dyn Read>,
+    _stdin: Box<dyn Read>,
     stdout: Box<dyn Write>,
     stderr: Box<dyn Write>,
 }
@@ -18,7 +18,7 @@ impl Cmd {
         Cmd {
             cmd: String::new(),
             args: Vec::new(),
-            stdin: Box::new(std::io::stdin()),
+            _stdin: Box::new(std::io::stdin()),
             stdout: Box::new(std::io::stdout()),
             stderr: Box::new(std::io::stderr()),
         }
@@ -81,7 +81,11 @@ impl Command for Ls {
                     all_paths.push(p);
                 }
             } else {
-                cmd.stderr.write_all(format!("ls: cannot access '{}': No such file or directory\n", path_str).as_bytes()).unwrap();
+                let _ = writeln!(
+                    cmd.stderr,
+                    "ls: cannot access '{}': No such file or directory",
+                    path_str
+                );
             }
         }
 
@@ -210,25 +214,21 @@ fn display_entry(cmd: &mut Cmd, paths: Vec<PathBuf>, long: bool, classify: bool)
                 } else {
                     (format!("{:>8}", metadata.len()), ())
                 };
-
-                cmd.stdout.write_all(format!(
-                    "{}{} {:<3} {:<8} {:<8} {} {} {}\n",
+                let _ = writeln!(
+                    cmd.stdout,
+                    "{}{} {:>3} {:<8} {:<8} {} {} {}",
                     file_type,
                     perms_string,
                     metadata.nlink(),
                     user_name,
                     group_name,
                     size_or_dev,
-                    last_modified.format("%b %e %H:%M"),
+                    last_modified.format("%b %d %H:%M"),
                     display_name
-                ).as_bytes()).unwrap();
+                );
             } else {
-                cmd.stdout.write_all(format!("{}  \n", display_name).as_bytes()).unwrap();
+                let _ = writeln!(cmd.stdout, "{}", display_name);
             }
         }
-    }
-
-    if !long {
-        cmd.stdout.write_all(b"\n").unwrap();
     }
 }
