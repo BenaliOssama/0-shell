@@ -11,6 +11,6 @@ fn main() {
         Box::new(io::stderr()),       // stderr
     );
 
-    let err = exec(cmd);
+    let err = exec(vec![cmd]);
     println!("{:?}", err);
 }

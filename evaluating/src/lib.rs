@@ -13,18 +13,16 @@ pub fn evaluate(user_input: &str) {
     for sub_vector in ast_data {
         for node in sub_vector {
             if let AstNode::Pipeline(commands) = node {
-                evaluate_pipeline(commands);
+                let mut cmds: Vec<Cmd> = Vec::new();
+                for c in commands {
+                    cmds.push(to_cmd(c.clone()));
+                }
+                // let _ = exec(cmds);
             } else if let AstNode::Command(command) = node {
                 // from_filename(".env").expect("Failed to read .env file");
-                exec(to_cmd(command));
+                let _ = exec(vec![to_cmd(command)]);
             }
         }
-    }
-}
-
-fn evaluate_pipeline(commands: Vec<Command>) {
-    for command in commands {
-        exec(to_cmd(command));
     }
 }
 
