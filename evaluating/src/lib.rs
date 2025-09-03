@@ -17,7 +17,7 @@ pub fn evaluate(user_input: &str) {
                 for c in commands {
                     cmds.push(to_cmd(c.clone()));
                 }
-                // let _ = exec(cmds);
+                let _ = exec(cmds);
             } else if let AstNode::Command(command) = node {
                 // from_filename(".env").expect("Failed to read .env file");
                 let _ = exec(vec![to_cmd(command)]);
