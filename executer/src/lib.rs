@@ -1,54 +1,76 @@
 use std::error::Error;
 use std::env;
-use std::process::{ Child, Command, Stdio };
-pub use commands::{ Registry, Cmd };
+use std::process::{Child, Command, Stdio};
+use std::ffi::OsStr;
+use std::path::Path;
+
+pub use commands::{Cmd, Registry};
 
 pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
-    let mut prev_stdout = None; // This will hold the output of the previous command
-    let mut children: Vec<Child> = Vec::new(); // This will hold all child processes we spawn
+    let mut prev_stdout = None;
+    let mut children: Vec<Child> = Vec::new();
 
-    let cmd_iter = commands.into_iter(); // Create an iterator from the Vec<Cmd>
-
-    // Process each command in the pipeline
-    let mut cmd_iter = cmd_iter.peekable();
+    let mut cmd_iter = commands.into_iter().peekable();
 
     while let Some(cmd) = cmd_iter.next() {
-        // Look for the command in the registry first
         let registry = Registry::new();
         if registry.has(&cmd) {
+            // Handle built-in commands (no piping)
+            if cmd_iter.peek().is_some() || prev_stdout.is_some() {
+                return Err("Built-in commands cannot be used in pipelines".into());
+            }
             registry.run(cmd);
-            return Ok(()); // If registry has the command, run it and return
+            return Ok(());
         }
 
-        let path = "/usr/bin";//env::var(&cmd.cmd)?;
-        // External command: get path from the environment or use cmd.cmd directly
-        // let path = env::var(&cmd.cmd).unwrap_or(cmd.cmd.clone());
+        // Find the executable in PATH
+        let executable = find_executable(&cmd.cmd)
+            .ok_or_else(|| format!("command not found: {}", cmd.cmd))?;
 
-        // Input: either from previous command's output or inherit from shell
         let stdin = match prev_stdout.take() {
             Some(output) => Stdio::from(output),
             None => Stdio::inherit(),
         };
 
-        // Output: pipe to next command if there is one, otherwise inherit
         let stdout = if cmd_iter.peek().is_some() {
-            Stdio::piped() // More commands follow, so pipe output
+            Stdio::piped()
         } else {
-            Stdio::inherit() // Last command, output to terminal
+            Stdio::inherit()
         };
 
-        // Spawn the command with configured stdin/stdout
-        let mut child = Command::new(path).args(cmd.args).stdin(stdin).stdout(stdout).spawn()?;
+        let mut child = Command::new(&executable)
+            .args(&cmd.args)
+            .stdin(stdin)
+            .stdout(stdout)
+            .spawn()?;
 
-        // Take ownership of stdout for the next command in the pipeline
         prev_stdout = child.stdout.take();
         children.push(child);
     }
 
-    // Wait for all spawned children to exit
+    // Wait for all children to finish
     for mut child in children {
         child.wait()?;
     }
 
     Ok(())
+}
+
+/// Finds the executable path using the PATH environment variable.
+fn find_executable<S: AsRef<OsStr>>(cmd: S) -> Option<std::path::PathBuf> {
+    let cmd_ref = cmd.as_ref();
+    if Path::new(&cmd_ref).is_absolute() {
+        return Some(cmd_ref.to_os_string().into());
+    }
+
+    env::var_os("PATH").and_then(|paths| {
+        env::split_paths(&paths).find_map(|dir| {
+            let candidate = dir.join(&cmd_ref);
+            if candidate.is_file() {
+                Some(candidate)
+            } else {
+                None
+            }
+        })
+    })
 }
