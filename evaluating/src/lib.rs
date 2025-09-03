@@ -14,9 +14,13 @@ pub fn evaluate(user_input: &str) {
         for node in sub_vector {
             if let AstNode::Pipeline(commands) = node {
                 let mut cmds: Vec<Cmd> = Vec::new();
-                commands.into_iter().for_each(|c| cmds.push(to_cmd(c)));
+                for c in commands {
+                    cmds.push(to_cmd(c.clone()));
+                }
+                let _ = exec(cmds);
             } else if let AstNode::Command(command) = node {
-                exec(vec![to_cmd(command)]);
+                // from_filename(".env").expect("Failed to read .env file");
+                let _ = exec(vec![to_cmd(command)]);
             }
         }
     }

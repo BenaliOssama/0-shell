@@ -7,7 +7,7 @@ pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
     let mut prev_stdout = None; // This will hold the output of the previous command
     let mut children: Vec<Child> = Vec::new(); // This will hold all child processes we spawn
 
-    let mut cmd_iter = commands.into_iter(); // Create an iterator from the Vec<Cmd>
+    let cmd_iter = commands.into_iter(); // Create an iterator from the Vec<Cmd>
 
     // Process each command in the pipeline
     let mut cmd_iter = cmd_iter.peekable();
@@ -20,7 +20,7 @@ pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
             return Ok(()); // If registry has the command, run it and return
         }
 
-        let path = env::var(&cmd.cmd)?;
+        let path = "/usr/bin";//env::var(&cmd.cmd)?;
         // External command: get path from the environment or use cmd.cmd directly
         // let path = env::var(&cmd.cmd).unwrap_or(cmd.cmd.clone());
 
