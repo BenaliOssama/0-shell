@@ -6,6 +6,7 @@ use commands::Registry;
 pub use commands::Cmd;
 
 pub fn exec(cmd: Cmd, env_dir: &str) -> Result<(), Box<dyn Error>> {
+    println!("exec called");
     let registry = Registry::new();
 
     // 1. Built-in
