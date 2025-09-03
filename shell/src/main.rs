@@ -2,7 +2,6 @@ use std::io::{ self, Write };
 use ctrlc;
 use evaluating::evaluate;
 use std::fs::File;
-use std::fs;
 use std::io::Read;
 use std::env;
 use colored::*;
@@ -15,13 +14,13 @@ fn main() {
             println!("");
         })
         .expect("Error setting Ctrl-C handler");
-    print!("\x1B[2J\x1B[H");
-    let mut file = File::open("ascii-logo.txt").unwrap();
-    let mut buffer = Vec::new();
-    let _ = file.read_to_end(&mut buffer);
-    for b in buffer {
-        print!("{}", b as char);
-    }
+    // print!("\x1B[2J\x1B[H");
+    // let mut file = File::open("ascii-logo.txt").unwrap();
+    // let mut buffer = Vec::new();
+    // let _ = file.read_to_end(&mut buffer);
+    // for b in buffer {
+    //     print!("{}", b as char);
+    // }
     println!("");
     loop {
         print!("{}{} ", build_prompt(), "$".color(Color::Yellow));
