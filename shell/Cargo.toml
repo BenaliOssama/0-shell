@@ -5,5 +5,7 @@ edition = "2024"
 
 [dependencies]
 evaluating = {path="../evaluating"}
+dotenvy = "0.15" 
 ctrlc = "3.4.7"
+rustyline = "17.0.1"
 colored = "3.0.0"

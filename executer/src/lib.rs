@@ -64,6 +64,7 @@ fn find_executable<S: AsRef<OsStr>>(cmd: S) -> Option<std::path::PathBuf> {
     }
 
     env::var_os("PATH").and_then(|paths| {
+        println!("Paths: {:?}", paths);
         env::split_paths(&paths).find_map(|dir| {
             let candidate = dir.join(&cmd_ref);
             if candidate.is_file() {
