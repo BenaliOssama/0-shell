@@ -20,7 +20,7 @@ pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
             return Ok(()); // If registry has the command, run it and return
         }
 
-        let path = "bin";//env::var(&cmd.cmd)?;
+        let path = "/usr/bin";//env::var(&cmd.cmd)?;
         // External command: get path from the environment or use cmd.cmd directly
         // let path = env::var(&cmd.cmd).unwrap_or(cmd.cmd.clone());
 

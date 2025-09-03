@@ -1,6 +1,6 @@
 use parsing::Lexer;
 use parsing::{ AstNode, Command };
-use executer::{ exec, Cmd };
+pub use executer::{ exec, Cmd };
 use std::io;
 
 pub fn evaluate(user_input: &str) {
