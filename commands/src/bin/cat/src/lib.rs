@@ -1,6 +1,6 @@
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{ self, Write, Read };
-
+use std::path::PathBuf;
 pub struct Cat;
 pub struct Cmd {
     pub cmd: String,
@@ -40,6 +40,17 @@ impl Command for Cat {
             return;
         }
         for filename in cmd.args.iter() {
+            println!("processing the file: {}", &filename);
+            if filename.ends_with("*") {
+                let dir = "./".to_string() + &filename[..filename.len() - 1];
+                let files = list_files(&dir);
+                println!("the files are: {:?}", &files);
+                let cloned = self;
+                let mut cloned_cmd = Cmd::new();
+                cloned_cmd.args = files;
+                cloned.run(&mut cloned_cmd);
+                continue;
+            }
             match File::open(filename) {
                 Ok(mut file) => {
                     let stdout = cmd.stdout.as_mut();
@@ -57,4 +68,23 @@ impl Command for Cat {
             }
         }
     }
+}
+
+
+fn list_files(path: &str) -> Vec<String> {
+    let mut files = Vec::new();
+    println!("the path are: {}", path);
+    if let Ok(entries) = fs::read_dir(path) {
+
+        for entry in entries.flatten() {
+            let path: PathBuf = entry.path();
+            if path.is_file() {
+                if let Some(s) = path.to_str() {
+                    files.push(s.to_string());
+                }
+            }
+        }
+    }
+
+    files
 }
