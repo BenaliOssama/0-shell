@@ -40,11 +40,9 @@ impl Command for Cat {
             return;
         }
         for filename in cmd.args.iter() {
-            println!("processing the file: {}", &filename);
             if filename.ends_with("*") {
                 let dir = "./".to_string() + &filename[..filename.len() - 1];
                 let files = list_files(&dir);
-                println!("the files are: {:?}", &files);
                 let cloned = self;
                 let mut cloned_cmd = Cmd::new();
                 cloned_cmd.args = files;
@@ -73,7 +71,6 @@ impl Command for Cat {
 
 fn list_files(path: &str) -> Vec<String> {
     let mut files = Vec::new();
-    println!("the path are: {}", path);
     if let Ok(entries) = fs::read_dir(path) {
 
         for entry in entries.flatten() {
