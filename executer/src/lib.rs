@@ -1,8 +1,7 @@
 use std::error::Error;
 use std::env;
 use std::process::{Child, Command, Stdio};
-use std::ffi::OsStr;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub use commands::{Cmd, Registry};
 
@@ -57,21 +56,12 @@ pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
 }
 
 /// Finds the executable path using the PATH environment variable.
-fn find_executable<S: AsRef<OsStr>>(cmd: S) -> Option<std::path::PathBuf> {
-    let cmd_ref = cmd.as_ref();
-    if Path::new(&cmd_ref).is_absolute() {
-        return Some(cmd_ref.to_os_string().into());
+fn find_executable(cmd: &str) -> Option<PathBuf> {
+    let dir = env::var("DIR").ok()?; // get env var, return None if missing
+    let candidate = Path::new(&dir).join(cmd); // join paths safely
+    if candidate.is_file() {
+        Some(candidate)
+    } else {
+        None
     }
-
-    env::var_os("PATH").and_then(|paths| {
-        println!("Paths: {:?}", paths);
-        env::split_paths(&paths).find_map(|dir| {
-            let candidate = dir.join(&cmd_ref);
-            if candidate.is_file() {
-                Some(candidate)
-            } else {
-                None
-            }
-        })
-    })
 }
