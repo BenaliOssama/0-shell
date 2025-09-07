@@ -72,9 +72,9 @@ impl Command for Ls {
                     continue;
                 }
             }
-            let _= writeln!(cmd.stdout);
+            let _ = writeln!(cmd.stdout);
         }
-        for  path_str in paths.iter() {
+        for path_str in paths.iter() {
             let path = Path::new(path_str);
 
             if multiple_dirs {
@@ -171,18 +171,7 @@ fn display_entry(cmd: &mut Cmd, paths: Vec<PathBuf>, long: bool, classify: bool)
                     display_name.push('*');
                 }
             }
-
-            if metadata.is_dir() {
-                display_name = display_name.blue().bold().to_string();
-            } else if metadata.file_type().is_symlink() {
-                display_name = display_name.cyan().bold().to_string();
-            } else if metadata.file_type().is_socket() {
-                display_name = display_name.magenta().to_string();
-            } else if metadata.file_type().is_fifo() {
-                display_name = display_name.yellow().to_string();
-            } else if (metadata.permissions().mode() & 0o111) != 0 {
-                display_name = display_name.green().to_string();
-            }
+            display_name = colored_names(&display_name, metadata.clone());
 
             let uid = metadata.uid();
             let gid = metadata.gid();
@@ -200,8 +189,22 @@ fn display_entry(cmd: &mut Cmd, paths: Vec<PathBuf>, long: bool, classify: bool)
             let perms_string = format_mode(metadata.permissions().mode());
 
             let symlink_target = if file_type_char == 'l' {
+                let is_old = metadata
+                    .modified()
+                    .map(
+                        |modified_time|
+                            Local::now() - chrono::DateTime::<Local>::from(modified_time) >
+                            chrono::Duration::days(183)
+                    )
+                    .unwrap_or(false);
                 fs::read_link(path)
-                    .map(|t| format!(" -> {}", t.display()))
+                    .map(|t|
+                        format!(" -> {}", if is_old {
+                            t.display().to_string().blue().bold()
+                        } else {
+                            t.display().to_string().yellow().bold()
+                        })
+                    )
                     .unwrap_or_default()
             } else {
                 String::new()
@@ -338,6 +341,34 @@ fn format_mode(mode: u32) -> String {
     }
 
     perms
+}
+
+fn colored_names(display_name: &str, metadata: fs::Metadata) -> String {
+    let mut display_name = display_name.to_string();
+
+    if metadata.file_type().is_dir() {
+        if (metadata.permissions().mode() & 0o1000) != 0 {
+            display_name = display_name.on_green().to_string();
+        } else {
+            display_name = display_name.blue().bold().to_string();
+        }
+    } else if metadata.file_type().is_symlink() {
+        display_name = display_name.cyan().bold().to_string();
+    } else if metadata.file_type().is_socket() {
+        display_name = display_name.magenta().to_string();
+    } else if metadata.file_type().is_fifo() {
+        display_name = display_name.yellow().to_string();
+    } else if (metadata.permissions().mode() & 0o111) != 0 {
+        display_name = display_name.green().to_string();
+    } else if metadata.permissions().mode() == 0 {
+        display_name = display_name.on_blue().to_string();
+    } else if metadata.permissions().mode() & 0o200 != 0 {
+        display_name = display_name.yellow().bold().to_string();
+    }else {
+        display_name = display_name.normal().to_string();
+    }
+
+    display_name
 }
 
 fn sort_file_names(mut entries: Vec<PathBuf>) -> Vec<PathBuf> {
