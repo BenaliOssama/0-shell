@@ -45,17 +45,21 @@ impl Command for Ls {
         let mut paths: Vec<&str> = Vec::new();
         let args_clone = cmd.args.clone();
         for arg in args_clone.iter() {
-            match arg.as_str() {
-                "-a" => {
-                    show_all = true;
+            if arg.starts_with('-') && arg.len() > 1 {
+                for ch in arg.chars().skip(1) {
+                    match ch {
+                        'a' => show_all = true,
+                        'l' => long = true,
+                        'F' => classify = true,
+                        _ => {
+                            let _ = writeln!(cmd.stderr, "ls: invalid option -- '{}'", ch);
+                            let _ = writeln!(cmd.stderr, "Try 'ls --help' for more information.");
+                            return;
+                        }
+                    }
                 }
-                "-l" => {
-                    long = true;
-                }
-                "-F" => {
-                    classify = true;
-                }
-                _ => paths.push(arg),
+            } else {
+                paths.push(arg);
             }
         }
 
@@ -352,19 +356,26 @@ fn colored_names(display_name: &str, metadata: fs::Metadata) -> String {
         } else {
             display_name = display_name.blue().bold().to_string();
         }
-    } else if metadata.file_type().is_symlink() {
+    } 
+    else if metadata.file_type().is_symlink() {
         display_name = display_name.cyan().bold().to_string();
-    } else if metadata.file_type().is_socket() {
+    }
+    else if metadata.file_type().is_socket() {
         display_name = display_name.magenta().to_string();
-    } else if metadata.file_type().is_fifo() {
+    }
+    else if metadata.file_type().is_fifo() {
         display_name = display_name.yellow().to_string();
-    } else if (metadata.permissions().mode() & 0o111) != 0 {
+    } 
+    else if (metadata.permissions().mode() & 0o111) != 0 {
         display_name = display_name.green().to_string();
-    } else if metadata.permissions().mode() == 0 {
+    }
+    else if metadata.permissions().mode() == 0 {
         display_name = display_name.on_blue().to_string();
-    } else if metadata.permissions().mode() & 0o200 != 0 {
+    }
+    else if metadata.file_type().is_char_device()  || metadata.file_type().is_block_device() {
         display_name = display_name.yellow().bold().to_string();
-    }else {
+    } 
+    else {
         display_name = display_name.normal().to_string();
     }
 
