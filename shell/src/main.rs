@@ -3,7 +3,7 @@ use rustyline::error::ReadlineError;
 use colored::*;
 use std::env;
 use std::{ error::Error, fs, io::{ self, Write } };
-use evaluating::evaluate;
+use tokenizer::evaluate;
 fn main() -> Result<(), Box<dyn Error>> {
     dotenvy::dotenv().ok();
     let mut rl = DefaultEditor::new()?;

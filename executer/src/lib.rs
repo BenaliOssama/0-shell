@@ -1,30 +1,32 @@
-use std::error::Error;
 use std::env;
-use std::process::{Child, Command, Stdio};
 use std::path::{Path, PathBuf};
+use std::process::{Child, Command, Stdio};
 
 pub use commands::{Cmd, Registry};
 
-pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
+pub fn exec(commands: Vec<Cmd>) {
     let mut prev_stdout = None;
     let mut children: Vec<Child> = Vec::new();
-
     let mut cmd_iter = commands.into_iter().peekable();
 
     while let Some(cmd) = cmd_iter.next() {
         let registry = Registry::new();
         if registry.has(&cmd) {
-            // Handle built-in commands (no piping)
             if cmd_iter.peek().is_some() || prev_stdout.is_some() {
-                return Err("Built-in commands cannot be used in pipelines".into());
+                eprintln!("Built-in commands cannot be used in pipelines");
+                continue;
             }
-            registry.run(cmd);
-            return Ok(());
-        }
 
-        // Find the executable in PATH
-        let executable = find_executable(&cmd.cmd)
-            .ok_or_else(|| format!("command not found: {}", cmd.cmd))?;
+            registry.run(cmd);
+            continue;
+        }
+        let executable = match find_executable(&cmd.cmd) {
+            Some(path) => path,
+            None => {
+                eprintln!("command not found: {}", cmd.cmd);
+                continue;
+            }
+        };
 
         let stdin = match prev_stdout.take() {
             Some(output) => Stdio::from(output),
@@ -36,29 +38,32 @@ pub fn exec(commands: Vec<Cmd>) -> Result<(), Box<dyn Error>> {
         } else {
             Stdio::inherit()
         };
-
-        let mut child = Command::new(&executable)
+        let mut child = match Command::new(&executable)
             .args(&cmd.args)
             .stdin(stdin)
             .stdout(stdout)
-            .spawn()?;
+            .spawn()
+        {
+            Ok(child) => child,
+            Err(err) => {
+                eprintln!("failed to execute '{}': {}", cmd.cmd, err);
+                continue;
+            }
+        };
 
         prev_stdout = child.stdout.take();
         children.push(child);
     }
-
-    // Wait for all children to finish
     for mut child in children {
-        child.wait()?;
+        if let Err(err) = child.wait() {
+            eprintln!("failed while waiting for process: {}", err);
+        }
     }
-
-    Ok(())
 }
 
-/// Finds the executable path using the PATH environment variable.
 fn find_executable(cmd: &str) -> Option<PathBuf> {
-    let dir = env::var("DIR").ok()?; // get env var, return None if missing
-    let candidate = Path::new(&dir).join(cmd); // join paths safely
+    let dir = env::var("DIR").ok()?;
+    let candidate = Path::new(&dir).join(cmd);
     if candidate.is_file() {
         Some(candidate)
     } else {

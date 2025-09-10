@@ -1,11 +1,3 @@
 [workspace]
-resolver = "3"
-members = [
-    "shell",
-    "evaluating",
-    "commands",
-    "executer",
-    "lexing",
-    "parsing",
-    "commands/src/bin/*",
-    ]
+resolver = "1"
+members = ["shell", "tokenizer", "commands", "executer", "commands/src/bin/*"]

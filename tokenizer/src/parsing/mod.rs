@@ -1,3 +1,4 @@
+mod lexing;
 pub use lexing::Lexer;
 
 #[derive(Clone, Debug, PartialEq)]

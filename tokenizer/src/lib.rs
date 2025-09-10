@@ -1,3 +1,4 @@
+mod parsing;
 use parsing::Lexer;
 use parsing::{ AstNode, Command };
 pub use executer::{ exec, Cmd };
@@ -17,10 +18,10 @@ pub fn evaluate(user_input: &str) {
                 for c in commands {
                     cmds.push(to_cmd(c.clone()));
                 }
-                let _ = exec(cmds);
+                exec(cmds);
             } else if let AstNode::Command(command) = node {
                 // from_filename(".env").expect("Failed to read .env file");
-                let _ = exec(vec![to_cmd(command)]);
+                exec(vec![to_cmd(command)]);
             }
         }
     }
