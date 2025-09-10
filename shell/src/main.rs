@@ -86,7 +86,7 @@ pub fn build_prompt() -> String {
         .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
         .unwrap_or("?".to_string());
     format!(
-        "{}:{}::[{}]",
+        "{}:{}::[{}] ",
         "0-shell".bright_green().bold(),
         user.on_bright_white(),
         cwd.bright_blue()

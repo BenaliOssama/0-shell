@@ -35,7 +35,7 @@ env:
 	@echo "Updating $(ENV_FILE)..."
 	@rm -f $(ENV_FILE)
 	@touch $(ENV_FILE)
-	@echo "DIR=$(INSTALL_DIR)/" >> $(ENV_FILE); 
+	@echo "DIR=$(shell pwd)/bin/" >> $(ENV_FILE); 
 	@echo "✅ .env updated:"
 	@cat $(ENV_FILE)
 
