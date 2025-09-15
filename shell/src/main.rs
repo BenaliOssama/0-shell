@@ -81,11 +81,11 @@ fn quotes_even(input: &str) -> bool {
 pub fn build_prompt() -> String {
     let user = env::var("USER").unwrap_or("user".to_string());
     let path = env::current_dir().unwrap();
-    let cwd = env
-        ::current_dir()
-        .ok()
-        .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
-        .unwrap_or("?".to_string());
+    // let cwd = env
+    //     ::current_dir()
+    //     .ok()
+    //     .and_then(|p| p.file_name().map(|n| n.to_string_lossy().to_string()))
+    //     .unwrap_or("?".to_string());
     format!(
         "{}{}{}:{}$ ",
         user.bright_green().bold(),
