@@ -1,4 +1,4 @@
-// <from> https://micahkepe.com/blog/minishell/?utm_source=chatgpt.com#executing-commands
+// <from> https://micahkepe.com/blog/minishell/
 
 Executing Commands
 We now have a basic shell that can read input from the user and parse that input into a sequence of commands that can be executed by spawning new processes. However, not all commands are equally handled by the shell, leading to the need for built-in commands and understanding how shells create processes.

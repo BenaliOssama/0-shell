@@ -5,8 +5,11 @@ use std::process::{Child, Command, Stdio};
 pub use commands::{Cmd, Registry};
 
 pub fn exec(commands: Vec<Cmd>) {
+    // stores the output of the previous command
     let mut prev_stdout = None;
+    // keeps track of running child processes
     let mut children: Vec<Child> = Vec::new();
+
     let mut cmd_iter = commands.into_iter().peekable();
 
     while let Some(cmd) = cmd_iter.next() {
@@ -38,7 +41,8 @@ pub fn exec(commands: Vec<Cmd>) {
         } else {
             Stdio::inherit()
         };
-        let mut child = match Command::new(&executable)
+        
+        let mut child: Child = match Command::new(&executable)
             .args(&cmd.args)
             .stdin(stdin)
             .stdout(stdout)

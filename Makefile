@@ -7,16 +7,20 @@ INSTALL_DIR := bin
 .PHONY: all clean build copy env
 
 all: clean build copy env
-
+# @ run siclently
 clean:
 	@echo "Cleaning $(TARGET_DIR)..."
 	@cargo clean
-	@rm -rf $(INSTALL_DIR)/* $(INSTALL_DIR)/*
+	@rm -rf $(INSTALL_DIR)/* 
 	@mkdir -p $(INSTALL_DIR)
 
 build:
 	@echo "Building workspace..."
 	@cargo build --release --workspace 
+
+show_files:
+	@echo "Files in $(INSTALL_DIR):"
+	@echo $(wildcard $(INSTALL_DIR)/*)
 
 copy:
 	@echo "Copying binaries to $(INSTALL_DIR)..."
