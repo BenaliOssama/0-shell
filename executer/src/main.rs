@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use std::io::{self};
 use executer::*;
 use commands::{Cmd};
 
@@ -11,6 +11,6 @@ fn main() {
         Box::new(io::stderr()),       // stderr
     );
 
-    let err = execute(cmd, "/user/bin");
+    let err = exec(vec![cmd]);
     println!("{:?}", err);
 }
